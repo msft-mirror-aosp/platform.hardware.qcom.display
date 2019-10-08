@@ -21,11 +21,14 @@ endif
 
 LOCAL_CLANG                   := true
 
+# For enabling the fake display
+ifneq ($(TARGET_HAS_NO_DISPLAY),true)
+
 # TODO: Remove libui after addressing gpu_tonemapper issues
 LOCAL_SHARED_LIBRARIES        := libsdmcore libqservice libbinder libhardware libhardware_legacy \
                                  libutils libcutils libsync libqdutils libqdMetaData libdl libdrmutils \
                                  libsdmutils libc++ liblog libgrallocutils libdl \
-                                 vendor.display.config@1.0 libhidlbase libhidltransport \
+                                 vendor.display.config@1.0 libhidlbase \
                                  libui libgpu_tonemapper
 
 ifneq ($(TARGET_USES_GRALLOC1), true)
@@ -65,6 +68,11 @@ endif
 ifeq ($(TARGET_HAS_WIDE_COLOR_DISPLAY), true)
     LOCAL_CFLAGS += -DFEATURE_WIDE_COLOR
 endif
+
+else #Target does not have display
+LOCAL_SHARED_LIBRARIES :=  libc++ liblog libutils
+LOCAL_SRC_FILES := hwcomposer.cpp
+endif #ifneq ($(TARGET_HAS_NO_DISPLAY),true)
 
 include $(BUILD_SHARED_LIBRARY)
 endif
