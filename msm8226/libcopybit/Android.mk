@@ -22,6 +22,9 @@ include $(BUILD_COPY_HEADERS)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE                  := copybit.$(TARGET_BOARD_PLATFORM)
+LOCAL_LICENSE_KINDS           := SPDX-license-identifier-Apache-2.0 SPDX-license-identifier-BSD legacy_not_a_contribution
+LOCAL_LICENSE_CONDITIONS      := by_exception_only not_allowed notice
+LOCAL_NOTICE_FILE             := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_RELATIVE_PATH    := hw
 LOCAL_PROPRIETARY_MODULE      := true
 LOCAL_MODULE_TAGS             := optional
@@ -36,12 +39,12 @@ ifeq ($(TARGET_USES_C2D_COMPOSITION),true)
     include $(BUILD_SHARED_LIBRARY)
 else
     ifneq ($(call is-chipset-in-board-platform,msm7630),true)
-        ifeq ($(call is-board-platform-in-list,$(MSM7K_BOARD_PLATFORMS)),true)
+        ifneq (,$(call is-board-platform-in-list2,$(MSM7K_BOARD_PLATFORMS)))
             LOCAL_CFLAGS += -DCOPYBIT_MSM7K=1
             LOCAL_SRC_FILES := software_converter.cpp copybit.cpp
             include $(BUILD_SHARED_LIBRARY)
         endif
-        ifeq ($(call is-board-platform-in-list,msm8610),true)
+        ifneq (,$(call is-board-platform-in-list2,msm8610))
             LOCAL_SRC_FILES := software_converter.cpp copybit.cpp
             include $(BUILD_SHARED_LIBRARY)
         endif
